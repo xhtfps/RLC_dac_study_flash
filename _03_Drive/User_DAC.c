@@ -113,17 +113,17 @@ void User_DAC_DMA_Init()
 	DMA_InitStruct.DMA_PeripheralBaseAddr = (uint32_t)&DAC ->DHR12R1 ;			// 源地址 -> DAC1通道12位右对齐数据保持寄存器
 	DMA_InitStruct.DMA_DIR = DMA_DIR_MemoryToPeripheral;										// 传输方向 -> 内存至外设
 	DMA_InitStruct.DMA_BufferSize = DACDataLength;													// 数据大小 -> DAC数据长度
-  DMA_InitStruct.DMA_PeripheralInc = DMA_PeripheralInc_Disable;						// 外设地址递增	-> 否
-  DMA_InitStruct.DMA_MemoryInc = DMA_MemoryInc_Enable;										// 内存地址递增 -> 是
-  DMA_InitStruct.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;// 源数据大小 -> 半字
-  DMA_InitStruct.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;				// 目标数据大小 -> 半字
-  DMA_InitStruct.DMA_Mode = DMA_Mode_Circular;														// 工作模式 -> 循环模式
-  DMA_InitStruct.DMA_Priority = DMA_Priority_High;												// DMA优先级 -> 高优先级
-  DMA_InitStruct.DMA_FIFOMode = DMA_FIFOMode_Disable;         						// FIFO模式 -> 失能
-  DMA_InitStruct.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;							// FIFO阈值 -> 满阈值
-  DMA_InitStruct.DMA_MemoryBurst = DMA_MemoryBurst_Single;								// 内存突发
-  DMA_InitStruct.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;				// 外设突发
-  DMA_Init( DMA1_Stream1 , &DMA_InitStruct );
+	DMA_InitStruct.DMA_PeripheralInc = DMA_PeripheralInc_Disable;						// 外设地址递增	-> 否
+	DMA_InitStruct.DMA_MemoryInc = DMA_MemoryInc_Enable;										// 内存地址递增 -> 是
+	DMA_InitStruct.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;// 源数据大小 -> 半字
+	DMA_InitStruct.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;				// 目标数据大小 -> 半字
+	DMA_InitStruct.DMA_Mode = DMA_Mode_Circular;														// 工作模式 -> 循环模式
+	DMA_InitStruct.DMA_Priority = DMA_Priority_High;												// DMA优先级 -> 高优先级
+	DMA_InitStruct.DMA_FIFOMode = DMA_FIFOMode_Disable;         						// FIFO模式 -> 失能
+	DMA_InitStruct.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;							// FIFO阈值 -> 满阈值
+	DMA_InitStruct.DMA_MemoryBurst = DMA_MemoryBurst_Single;								// 内存突发
+	DMA_InitStruct.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;				// 外设突发
+	DMA_Init( DMA1_Stream1 , &DMA_InitStruct );
 	
 	// 清除DMA1中断标志
 	//DMA_ClearFlag( DMA1_Stream5 , DMA_FLAG_TCIF0 );  

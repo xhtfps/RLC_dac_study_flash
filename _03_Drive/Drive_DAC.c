@@ -283,11 +283,5 @@ void DAC1_Vol_Set(u16 vol)
 	DAC_SetChannel1Data(DAC_Align_12b_R,vol);//12 位右对齐数据格式
 }
 
-
-
 /*******************************(C) COPYRIGHT 2016 Wind（谢玉伸）*********************************/
-
-
-
-
 

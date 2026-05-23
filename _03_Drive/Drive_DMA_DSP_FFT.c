@@ -40,6 +40,7 @@ float ADCfre;
 float ADCfre1;
 extern float Sample_rate;//采样率
 u32 PhaseIndex;
+float FFT_TargetFre = 0.0f;
 /*********************************************************************************************************/
 
 //功能函数区
@@ -180,14 +181,25 @@ void DMA2_Stream0_IRQHandler(void)
 
 
 } 
+void FFT_SetTargetFre(float targetFre)
+{
+    FFT_TargetFre = targetFre;
+}
 
 void FFT_Handle()
 {
     u32 i;
     u16 OutDelayCount = 0;
-	u16 temp1 = 0, temp2 = 0;
-	OutDelayCount = 0;
-    // 同时使能两个ADC的DMA！
+    u32 targetIndex = 0;
+    u32 searchStart = 1;
+    u32 searchEnd = 1;
+    u32 idx;
+    float targetBin = 0.0f;
+    float pairValue = 0.0f;
+    float bestPairValue = 0.0f;
+
+    OutDelayCount = 0;
+
     ADC_DMACmd(ADC1, ENABLE);
     ADC_DMACmd(ADC2, ENABLE);
 
@@ -202,7 +214,6 @@ void FFT_Handle()
     TIM_Cmd(TIM3, DISABLE);
     computeflag = 0;
 
-    // FFT数据准备
     for(i=0; i<ADCDataLength; i++)
     {
         fft_inputbuf1[2*i]   = (double)(ADCData[i] & 0xffff) * 3.3 / 4096;
@@ -211,37 +222,75 @@ void FFT_Handle()
         fft_inputbuf2[2*i+1] = 0;
     }
 
-    // ADC1处理（只清除直流分量，不清除基频！）
     arm_cfft_radix4_init_f32(&scfft, ADCDataLength, 0, 1);
     arm_cfft_radix4_f32(&scfft, fft_inputbuf1);
     arm_cmplx_mag_f32(fft_inputbuf1, fft_outputbuf1, ADCDataLength);
-    fft_outputbuf1[0] = 0;  // ← 只清除直流分量（索引0）！
+    fft_outputbuf1[0] = 0;
     arm_max_f32(fft_outputbuf1, ADCDataLength/2, &BaseValueADC1, &BaseIndexADC1);
-//    pha1 = atan2(fft_inputbuf1[2*BaseIndexADC1+1], fft_inputbuf1[2*BaseIndexADC1]) * 180 / PI;
 
-    // ADC2处理（只清除直流分量，不清除基频！）
     arm_cfft_radix4_init_f32(&scfft, ADCDataLength, 0, 1);
     arm_cfft_radix4_f32(&scfft, fft_inputbuf2);
     arm_cmplx_mag_f32(fft_inputbuf2, fft_outputbuf2, ADCDataLength);
-    fft_outputbuf2[0] = 0;  // ← 只清除直流分量（索引0）！
+    fft_outputbuf2[0] = 0;
     arm_max_f32(fft_outputbuf2, ADCDataLength/2, &BaseValueADC2, &BaseIndexADC2);
-//  pha2 = atan2(fft_inputbuf2[2*BaseIndexADC2+1], fft_inputbuf2[2*BaseIndexADC2]) * 180 / PI;
-	
-	if (BaseValueADC1 >= BaseValueADC2)
-	{
-	  PhaseIndex = BaseIndexADC1;
-	}
-	else
-	{
-	  PhaseIndex = BaseIndexADC2;
-	}
 
-	pha1 = atan2(fft_inputbuf1[2 * PhaseIndex + 1], fft_inputbuf1[2 * PhaseIndex]) * 180 / PI;
-	pha2 = atan2(fft_inputbuf2[2 * PhaseIndex + 1], fft_inputbuf2[2 * PhaseIndex]) * 180 / PI;
-  
+    if (FFT_TargetFre > 0.0f && Sample_rate > 0.0f)
+    {
+        targetBin = FFT_TargetFre * (float)ADCDataLength / Sample_rate;
+        targetIndex = (u32)(targetBin + 0.5f);
+        if (targetIndex < 1)
+        {
+            targetIndex = 1;
+        }
+        if (targetIndex >= (ADCDataLength / 2))
+        {
+            targetIndex = ADCDataLength / 2 - 1;
+        }
+
+        searchStart = targetIndex;
+        searchEnd = targetIndex;
+        if (targetIndex > 1)
+        {
+            searchStart = targetIndex - 1;
+        }
+        if ((targetIndex + 1) < (ADCDataLength / 2))
+        {
+            searchEnd = targetIndex + 1;
+        }
+
+        PhaseIndex = targetIndex;
+        bestPairValue = fft_outputbuf1[targetIndex] + fft_outputbuf2[targetIndex];
+        for (idx = searchStart; idx <= searchEnd; idx++)
+        {
+            pairValue = fft_outputbuf1[idx] + fft_outputbuf2[idx];
+            if (pairValue > bestPairValue)
+            {
+                bestPairValue = pairValue;
+                PhaseIndex = idx;
+            }
+        }
+
+        BaseValueADC1 = fft_outputbuf1[PhaseIndex];
+        BaseValueADC2 = fft_outputbuf2[PhaseIndex];
+    }
+    else
+    {
+        if (BaseValueADC1 >= BaseValueADC2)
+        {
+            PhaseIndex = BaseIndexADC1;
+        }
+        else
+        {
+            PhaseIndex = BaseIndexADC2;
+        }
+    }
+
+    pha1 = atan2(fft_inputbuf1[2 * PhaseIndex + 1], fft_inputbuf1[2 * PhaseIndex]) * 180 / PI;
+    pha2 = atan2(fft_inputbuf2[2 * PhaseIndex + 1], fft_inputbuf2[2 * PhaseIndex]) * 180 / PI;
+
     pha = pha1 - pha2;
-    ADCfre = BaseIndexADC1 * Sample_rate / ADCDataLength;
-    ADCfre1 = BaseIndexADC2 * Sample_rate / ADCDataLength;
+    ADCfre = PhaseIndex * Sample_rate / ADCDataLength;
+    ADCfre1 = ADCfre;
 
     ADC1VOL = 4 * BaseValueADC1 / ADCDataLength * 1.0295f;
     ADC2VOL = 4 * BaseValueADC2 / ADCDataLength * 1.0295f;

@@ -31,6 +31,7 @@ extern float ADCfre1;
 extern float ADC1VOL;
 extern float ADC2VOL;
 extern float pha;
+extern float FFT_TargetFre;
 /* 全局函数声明 --------------------------------------------------------------*/    
 
 void User_ADC_double_Init();
@@ -42,6 +43,8 @@ void User_TIM_doubleInit(u16 arr,u16 psc);
 void User_GPIO_doubleInit();
 
 void  FFT_Handle();
+
+void FFT_SetTargetFre(float targetFre);
 
 //void ADC1_DMA2_Reload(void); 
 //void ADC3_DMA2_Reload(u8 Speed);
