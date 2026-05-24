@@ -43,7 +43,7 @@ void OS_Init()
 	
 //	ADS1256_Init();
 	
-	OS_LCD_Init();\
+	OS_LCD_Init();
 	
 	//Touch_Init(); 
 	

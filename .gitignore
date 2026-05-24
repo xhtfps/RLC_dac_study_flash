@@ -15,6 +15,11 @@ DebugConfig/
 *.log
 JLinkSettings.ini
 *.bak
+*.bak[0-9]
+*.bak_*
+*.utf8
+__pycache__/
+patch_*.py
 *.db*
 *.scvd
 *.uv4.log

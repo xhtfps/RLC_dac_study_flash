@@ -25,7 +25,7 @@
 #define MenuChoiceNum 5
 #define Menu1Choice1 "RLC测量"
 #define Menu1Choice2 "网络测量"
-#define Menu1Choice3 "电路校准"
+#define Menu1Choice3 "信号源调节"
 #define Menu1Choice4 "学习模式"
 #define Menu1Choice5 "恢复出厂"
 
