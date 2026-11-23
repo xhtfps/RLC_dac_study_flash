@@ -1,0 +1,31 @@
+name: repo-guard
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    name: 仓库规范检查
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 拉取护栏脚本（索引仓单一来源）
+        run: |
+          set -e
+          urls="https://raw.githubusercontent.com/xhtfps/xhtfps/main/tools/repo_guard.py"
+          for i in 1 2 3; do
+            if curl -fsSL "$urls" -o "$RUNNER_TEMP/repo_guard.py"; then break; fi
+            sleep 2
+          done
+          test -s "$RUNNER_TEMP/repo_guard.py"
+
+      - name: 检查必备文件、README 外观层与体积
+        run: python3 "$RUNNER_TEMP/repo_guard.py" --summary
