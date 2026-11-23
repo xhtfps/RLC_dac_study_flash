@@ -1,0 +1,44 @@
+name: 功能建议
+description: 提出新功能、改进现有实现或补充文档
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: scene
+    attributes:
+      label: 使用场景
+      description: 谁在什么情况下会遇到这个问题，不要只写“想加个功能”
+      placeholder: 我在做……时，需要……
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 期望的方案
+      description: 描述你希望的行为；有具体接口/参数更好
+    validations:
+      required: true
+  - type: textarea
+    id: alternative
+    attributes:
+      label: 考虑过的替代方案
+      description: 试过但不行的方法，以及为什么不行
+  - type: dropdown
+    id: scope
+    attributes:
+      label: 影响范围
+      options:
+        - 只改文档
+        - 固件 / 应用代码
+        - 硬件接线或器件
+        - 上位机 / 脚本
+        - 不确定
+    validations:
+      required: true
+  - type: checkboxes
+    id: selfcheck
+    attributes:
+      label: 自查
+      options:
+        - label: 已确认这个需求不属于其他仓库的范畴（见仓库索引）
+        - label: 已检索现有 Issue / PR

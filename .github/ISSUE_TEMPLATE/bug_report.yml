@@ -1,0 +1,51 @@
+name: Bug 报告
+description: 报告可复现的功能异常、编译/烧录失败或文档错误
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈。请把环境和日志写全，缺信息的 Issue 只能来回追问。
+        提交前先搜一遍现有 Issue，避免重复。
+  - type: textarea
+    id: what
+    attributes:
+      label: 现象
+      description: 期望行为 vs 实际行为，尽量一句话说清
+      placeholder: 期望……，实际……
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: 复现步骤
+      description: 从干净状态开始的步骤，能稳定复现最好
+      placeholder: |
+        1. 打开工程 ……
+        2. 烧录后上电 ……
+        3. 观察到 ……
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: 环境
+      description: 板卡 / MCU 型号、IDE 与版本、固件版本、操作系统
+      placeholder: STM32F407ZGT6 + Keil MDK 5.37 + Windows 11
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志 / 截图
+      description: 完整报错文本优先，截图请补一句文字说明
+      render: text
+  - type: checkboxes
+    id: selfcheck
+    attributes:
+      label: 自查
+      options:
+        - label: 已确认不是接线、供电、驱动这类环境问题
+        - label: 已检索现有 Issue，没有重复
+        - label: 已附上完整日志而不是只有最后一行

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 全部仓库索引
+    url: https://github.com/xhtfps/xhtfps
+    about: 先确认这个仓库的定位与边界，避免开错仓
+  - name: 仓库格式规范
+    url: https://github.com/xhtfps/xhtfps/blob/main/REPO-STANDARD.md
+    about: 目录约定、体积红线、README 结构、提交与发布规范
