@@ -1,0 +1,20 @@
+# 文本归一：仓库内统一 LF，Windows 脚本保留 CRLF
+* text=auto eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+
+# 二进制：不做行尾转换、不参与文本 diff
+*.pdf binary
+*.docx binary
+*.xlsx binary
+*.pptx binary
+*.lib binary
+*.a binary
+*.bin binary
+*.hex binary
+*.elf binary
+*.axf binary
+*.png binary
+*.jpg binary
+*.mp4 binary
